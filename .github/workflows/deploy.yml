@@ -1,42 +1,131 @@
+# name: Deploy to AWS
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   workflow_dispatch:
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - name: Deploy to EC2
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.HOST_DNS }}
+#           username: ${{ secrets.USERNAME }}
+#           key: ${{ secrets.EC2_SSH_KEY }}
+#           script: |
+#             # 1. Install Docker & Git (Only runs if missing)
+#             sudo apt-get update -y
+#             sudo apt-get install -y docker.io git
+            
+#             # 2. Clone or Pull the Repo
+#             if [ ! -d "networkdeg" ]; then
+#               git clone https://github.com/dhruvq/networkdeg.git
+#             fi
+            
+#             cd networkdeg
+#             git pull origin main
+            
+#             # 3. Build the Docker Container
+#             # Stop any existing container first to avoid "Port already in use" errors
+#             sudo docker stop netprophet || true
+#             sudo docker rm netprophet || true
+            
+#             # Build new image
+#             sudo docker build -t netprophet-app .
+            
+#             # Run new container (Map Port 80 on server to Port 5000 in container)
+#             sudo docker run -d --name netprophet -p 80:5000 netprophet-app
+
 name: Deploy to AWS
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "feat/pipeline"
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy (used when manually triggering)'
+        required: false
+        default: 'main'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: "Optional: Checkout (keeps runner logs useful)"
+        uses: actions/checkout@v3
 
-      - name: Deploy to EC2
+      - name: "Deploy to EC2"
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 1. Install Docker & Git (Only runs if missing)
-            sudo apt-get update -y
-            sudo apt-get install -y docker.io git
-            
-            # 2. Clone or Pull the Repo
-            if [ ! -d "networkdeg" ]; then
-              git clone https://github.com/dhruvq/networkdeg.git
+            set -euo pipefail
+
+            # Prefer github.ref_name (set on push); if empty (e.g. workflow_dispatch), use the manual input
+            BRANCH="${{ github.ref_name }}"
+            if [ -z "$BRANCH" ]; then
+              BRANCH="${{ github.event.inputs.branch }}"
             fi
-            
-            cd networkdeg
-            git pull origin main
-            
-            # 3. Build the Docker Container
-            # Stop any existing container first to avoid "Port already in use" errors
-            sudo docker stop netprophet || true
-            sudo docker rm netprophet || true
-            
-            # Build new image
-            sudo docker build -t netprophet-app .
-            
-            # Run new container (Map Port 80 on server to Port 5000 in container)
-            sudo docker run -d --name netprophet -p 80:5000 netprophet-app
+
+            if [ -z "$BRANCH" ]; then
+              BRANCH="main"
+            fi
+
+            echo "Starting deploy for branch: '$BRANCH'"
+
+            SANITIZED="${BRANCH//\//-}"
+            APP_NAME="netprophet-${SANITIZED}"
+
+            if [ "$BRANCH" = "main" ]; then
+              PORT=80
+            elif [ "$BRANCH" = "feat/pipeline" ]; then
+              PORT=5001
+            else
+              HASH=$(echo -n "$BRANCH" | cksum | awk '{print $1}')
+              PORT=$((5001 + (HASH % 999)))
+            fi
+
+            REPO="https://github.com/dhruvq/networkdeg.git"
+            CLONE_DIR="networkdeg"
+
+            echo "App name: $APP_NAME"
+            echo "Port: $PORT"
+            echo "Repo: $REPO"
+
+            sudo apt-get update -y
+            sudo apt-get install -y docker.io git || { echo "apt install failed"; exit 1; }
+
+            if [ ! -d "$CLONE_DIR" ]; then
+              git clone --depth 1 --branch "$BRANCH" "$REPO" "$CLONE_DIR" || { echo "git clone failed"; exit 1; }
+            else
+              cd "$CLONE_DIR"
+              git fetch --all --prune
+              git checkout "$BRANCH"
+              git pull origin "$BRANCH"
+              cd ..
+            fi
+
+            cd "$CLONE_DIR"
+
+            sudo docker stop "$APP_NAME" || true
+            sudo docker rm "$APP_NAME"   || true
+
+            sudo docker build --pull -t "$APP_NAME" . || { echo "docker build failed"; exit 1; }
+
+            sudo docker run -d \
+              --name "$APP_NAME" \
+              --restart unless-stopped \
+              -p "${PORT}:5000" \
+              "$APP_NAME" || { echo "docker run failed"; exit 1; }
+
+            echo "Deployed $APP_NAME (branch: $BRANCH) -> http://${{ secrets.HOST_DNS }}:${PORT}"
