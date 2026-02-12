@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Production - Main Branch (Port 80)
+  netprophet-main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: netprophet-main
+    ports:
+      - "80:5000"
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
+    labels:
+      - "branch=main"
+
+  # Staging - Pipeline Branch (Port 5001)
+  netprophet-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: netprophet-pipeline
+    ports:
+      - "5001:5000"
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=staging
+    labels:
+      - "branch=feat/pipeline"

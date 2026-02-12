@@ -67,11 +67,25 @@ HTML_TEMPLATE = """
 def home():
     try:
         data = inference.get_live_prediction()
-        if "error" in data:
-            return render_template_string(HTML_TEMPLATE, error=data['error'])
+        if isinstance(data, dict) and "error" in data:
+            # return friendly page and HTTP 503
+            return render_template_string(HTML_TEMPLATE, error=data['error']), 503
         return render_template_string(HTML_TEMPLATE, prediction=data)
     except Exception as e:
-        return render_template_string(HTML_TEMPLATE, error=str(e))
+        return render_template_string(HTML_TEMPLATE, error=str(e)), 503
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
+# @app.route('/')
+# def home():
+#     try:
+#         data = inference.get_live_prediction()
+#         if "error" in data:
+#             return render_template_string(HTML_TEMPLATE, error=data['error'])
+#         return render_template_string(HTML_TEMPLATE, prediction=data)
+#     except Exception as e:
+#         return render_template_string(HTML_TEMPLATE, error=str(e))
+
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=5000)

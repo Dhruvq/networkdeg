@@ -1,0 +1,49 @@
+name: Deploy Main Branch to Port 80
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy Main to EC2 (Port 80)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Install Docker & Git if needed
+            sudo apt-get update -y
+            sudo apt-get install -y docker.io git
+
+            # Setup main branch directory
+            if [ ! -d "networkdeg-main" ]; then
+              git clone -b main https://github.com/dhruvq/networkdeg.git networkdeg-main
+            fi
+
+            cd networkdeg-main
+            git fetch origin
+            git reset --hard origin/main
+
+            # Stop & remove old container
+            sudo docker stop netprophet-main || true
+            sudo docker rm netprophet-main || true
+
+            # Build new image
+            sudo docker build -t netprophet-main .
+
+            # Run container on port 80 (main production)
+            sudo docker run -d \
+              --name netprophet-main \
+              --restart unless-stopped \
+              -p 80:5000 \
+              netprophet-main
+
+            # Cleanup old images
+            sudo docker image prune -f
