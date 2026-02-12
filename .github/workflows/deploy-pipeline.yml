@@ -18,9 +18,31 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Install Docker & Git if needed
-            sudo apt-get update -y
-            sudo apt-get install -y docker.io git
+            set -euo pipefail
+
+            # Wait for apt lock to be available (max 5 minutes)
+            echo "Waiting for apt lock..."
+            for i in {1..30}; do
+              if sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; then
+                echo "Apt is locked, waiting 10s... (attempt $i/30)"
+                sleep 10
+              else
+                break
+              fi
+            done
+
+            # Install only if not already present
+            if ! command -v docker &> /dev/null; then
+              echo "Installing Docker..."
+              sudo apt-get update -y
+              sudo apt-get install -y docker.io || { echo "Docker install failed"; exit 1; }
+            fi
+
+            if ! command -v git &> /dev/null; then
+              echo "Installing Git..."
+              sudo apt-get update -y
+              sudo apt-get install -y git || { echo "Git install failed"; exit 1; }
+            fi
 
             # Setup feat/pipeline branch directory
             if [ ! -d "networkdeg-pipeline" ]; then
