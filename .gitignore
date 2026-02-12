@@ -1,1 +1,50 @@
+# Virtual environment
 .venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Data files (too large for git, keep local only)
+*.csv
+network_telemetry.csv
+training_data.csv
+
+# Model files (extras not used in production)
+model.json
+netprophet_model.json
+# tournament_model.json is kept in git (production model)
+
+# Training scripts (not needed for production deployment)
+ingest_data.py
+process_data.py
+train_model.py
+train_model_smote.py
+tune_model.py
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+/tmp/
+*.log
