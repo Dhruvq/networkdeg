@@ -113,7 +113,7 @@ MODEL_FILE = "tournament_model.json"
 RIPE_API_TIMEOUT = 60           # per-request timeout (seconds)
 RIPE_API_RETRIES = 3           # number of attempts
 RIPE_BACKOFF_FACTOR = 1.5      # exponential backoff multiplier
-RIPE_CACHE_TTL = 300           # seconds to keep in-memory RIPE results (5 minutes)
+RIPE_CACHE_TTL = 600           # seconds to keep in-memory RIPE results (5 minutes)
 PERSISTENT_PREDICT_PATH = "/tmp/last_prediction.json"  # fallback persisted prediction
 
 # module-level cache & model holder

@@ -1,7 +1,26 @@
 from flask import Flask, render_template_string
 import inference
+import threading
+import time
 
 app = Flask(__name__)
+
+def _warmup_cache():
+    """Pre-warm cache on startup so first user doesn't wait"""
+    time.sleep(2)  # Give Flask time to start
+    print("[app] Warming up cache...")
+    try:
+        result = inference.get_live_prediction()
+        if "error" not in result:
+            print("[app] Cache warmed successfully!")
+        else:
+            print(f"[app] Cache warmup returned error: {result.get('error')}")
+    except Exception as e:
+        print(f"[app] Cache warmup failed: {e}")
+
+# Start cache warmup in background thread
+warmup_thread = threading.Thread(target=_warmup_cache, daemon=True)
+warmup_thread.start()
 
 HTML_TEMPLATE = """
 <!DOCTYPE html>
