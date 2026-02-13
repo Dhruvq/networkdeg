@@ -110,10 +110,10 @@ RIPE_API_URL = f"https://atlas.ripe.net/api/v2/measurements/{MEASUREMENT_ID}/res
 MODEL_FILE = "tournament_model.json"
 
 # TIMEOUTS / RETRIES / CACHE
-RIPE_API_TIMEOUT = 30           # per-request timeout (seconds)
+RIPE_API_TIMEOUT = 60           # per-request timeout (seconds)
 RIPE_API_RETRIES = 3           # number of attempts
 RIPE_BACKOFF_FACTOR = 1.5      # exponential backoff multiplier
-RIPE_CACHE_TTL = 30            # seconds to keep in-memory RIPE results
+RIPE_CACHE_TTL = 300           # seconds to keep in-memory RIPE results (5 minutes)
 PERSISTENT_PREDICT_PATH = "/tmp/last_prediction.json"  # fallback persisted prediction
 
 # module-level cache & model holder
@@ -153,7 +153,7 @@ def _load_model():
     return _MODEL
 
 def _fetch_ripe_once(start_time):
-    params = {"format": "json", "limit": 2000, "start": start_time}
+    params = {"format": "json", "limit": 800, "start": start_time}
     resp = requests.get(RIPE_API_URL, params=params, timeout=RIPE_API_TIMEOUT)
     resp.raise_for_status()
     return resp.json()
