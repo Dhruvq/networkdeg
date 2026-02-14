@@ -75,7 +75,11 @@ jobs:
             echo "Waiting for Flask to start..."
             sleep 5
 
-            # Verify deployment
+            # Trigger initial cache update BEFORE health check
+            echo "Triggering initial cache update..."
+            sudo docker exec netprophet-main python3 /app/update_cache.py || echo "Initial cache update failed, will retry via cron"
+
+            # Verify deployment (now cache should exist)
             if curl -f http://localhost/ --max-time 10; then
               echo "Deployment successful - Flask is responding"
             else
@@ -92,10 +96,6 @@ jobs:
             else
               echo "Cron job already configured"
             fi
-
-            # Manually trigger initial cache update
-            echo "Triggering initial cache update..."
-            sudo docker exec netprophet-main python3 /app/update_cache.py || echo "Initial cache update will retry via cron"
 
             # Cleanup old images
             sudo docker image prune -f
