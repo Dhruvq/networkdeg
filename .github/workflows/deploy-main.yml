@@ -53,6 +53,9 @@ jobs:
             git fetch origin
             git reset --hard origin/main
 
+            # Create persistent cache directory on host (survives deployments)
+            sudo mkdir -p /var/lib/netprophet/cache
+
             # Stop & remove old container
             sudo docker stop netprophet-main || true
             sudo docker rm netprophet-main || true
@@ -60,12 +63,39 @@ jobs:
             # Build new image
             sudo docker build -t netprophet-main .
 
-            # Run container on port 80 (main production)
+            # Run container on port 80 with persistent cache volume
             sudo docker run -d \
               --name netprophet-main \
               --restart unless-stopped \
               -p 80:5000 \
+              -v /var/lib/netprophet/cache:/tmp \
               netprophet-main
+
+            # Wait for Flask to start
+            echo "Waiting for Flask to start..."
+            sleep 5
+
+            # Verify deployment
+            if curl -f http://localhost/ --max-time 10; then
+              echo "Deployment successful - Flask is responding"
+            else
+              echo "Deployment failed - Flask not responding"
+              sudo docker logs netprophet-main --tail 50
+              exit 1
+            fi
+
+            # Setup cron job for cache updates (if not already configured)
+            if ! crontab -l 2>/dev/null | grep -q "update_cache.py"; then
+              echo "Setting up cron job for cache updates..."
+              (crontab -l 2>/dev/null; echo "*/10 * * * * sudo docker exec netprophet-main python3 /app/update_cache.py >> /var/log/netprophet_cache.log 2>&1") | crontab -
+              echo "Cron job configured"
+            else
+              echo "Cron job already configured"
+            fi
+
+            # Manually trigger initial cache update
+            echo "Triggering initial cache update..."
+            sudo docker exec netprophet-main python3 /app/update_cache.py || echo "Initial cache update will retry via cron"
 
             # Cleanup old images
             sudo docker image prune -f
