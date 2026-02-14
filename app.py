@@ -3,8 +3,25 @@ import inference
 import json
 import os
 import time
+from datetime import datetime
+import pytz
 
 app = Flask(__name__)
+
+@app.template_filter('to_pst')
+def to_pst(timestamp_str):
+    """Convert UTC timestamp string to PST"""
+    try:
+        # Parse the timestamp (assuming it's in UTC)
+        dt = datetime.fromisoformat(str(timestamp_str).replace('Z', '+00:00'))
+        if dt.tzinfo is None:
+            dt = pytz.UTC.localize(dt)
+        # Convert to PST
+        pst = pytz.timezone('America/Los_Angeles')
+        dt_pst = dt.astimezone(pst)
+        return dt_pst.strftime('%Y-%m-%d %H:%M:%S %Z')
+    except Exception:
+        return timestamp_str
 
 def _get_cached_prediction():
     """
@@ -88,7 +105,7 @@ HTML_TEMPLATE = """
                 <span class="metric-value">{{ prediction.jitter|round(1) }} ms</span>
             </div>
             
-            <p style="margin-top: 30px; font-size: 12px; color: #535c68;">Last Updated: {{ prediction.timestamp }} UTC</p>
+            <p style="margin-top: 30px; font-size: 12px; color: #535c68;">Last Updated: {{ prediction.timestamp|to_pst }}</p>
         {% endif %}
     </div>
 </body>

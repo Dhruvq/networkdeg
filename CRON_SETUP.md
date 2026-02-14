@@ -14,7 +14,7 @@ This document explains how to set up the background cron job to keep the predict
 ### 1. SSH into your EC2 instance
 
 ```bash
-ssh -i your-key.pem ubuntu@54.215.23.12
+ssh -i your-key.pem ubuntu@xx.xxx.xx.xx
 ```
 
 ### 2. Find the path to update_cache.py in the container
@@ -89,7 +89,7 @@ sudo systemctl start cron
 **Script failing?**
 ```bash
 # Run manually to see errors
-sudo docker exec netprophet-main python3 /update_cache.py
+sudo docker exec netprophet-main python3 app/update_cache.py
 ```
 
 **Cache file not being created?**
