@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 5000
 
 # Command to run the app
-CMD ["gunicorn", "-w", "3", "-b", "0.0.0.0:5000", "--timeout", "120", "app:app"]
+CMD ["gunicorn", "-w", "3", "-b", "0.0.0.0:5000", "--timeout", "300", "app:app"]
