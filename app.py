@@ -1,27 +1,39 @@
 from flask import Flask, render_template_string
 import inference
-import threading
+import json
+import os
 import time
 
 app = Flask(__name__)
 
-# Warmup disabled due to memory constraints on t3.micro
-# def _warmup_cache():
-#     """Pre-warm cache on startup so first user doesn't wait"""
-#     time.sleep(2)  # Give Flask time to start
-#     print("[app] Warming up cache...")
-#     try:
-#         result = inference.get_live_prediction()
-#         if "error" not in result:
-#             print("[app] Cache warmed successfully!")
-#         else:
-#             print(f"[app] Cache warmup returned error: {result.get('error')}")
-#     except Exception as e:
-#         print(f"[app] Cache warmup failed: {e}")
-#
-# # Start cache warmup in background thread
-# warmup_thread = threading.Thread(target=_warmup_cache, daemon=True)
-# warmup_thread.start()
+def _get_cached_prediction():
+    """
+    Read prediction from cache file updated by cron job.
+    Falls back to live inference if cache is stale or missing.
+    """
+    cache_file = inference.PERSISTENT_PREDICT_PATH
+    max_age_seconds = 15 * 60  # 15 minutes
+
+    # Try to read cached file
+    try:
+        if os.path.exists(cache_file):
+            with open(cache_file, 'r') as f:
+                data = json.load(f)
+
+            cached_ts = data.get('ts', 0)
+            age = int(time.time()) - cached_ts
+
+            if age < max_age_seconds:
+                print(f"[app] Serving cached prediction (age: {age}s)")
+                return data.get('prediction')
+            else:
+                print(f"[app] Cache too old ({age}s), falling back to live")
+    except Exception as e:
+        print(f"[app] Failed to read cache: {e}")
+
+    # Fallback to live inference (slow but works)
+    print("[app] Fetching live prediction...")
+    return inference.get_live_prediction()
 
 HTML_TEMPLATE = """
 <!DOCTYPE html>
@@ -86,7 +98,7 @@ HTML_TEMPLATE = """
 @app.route('/')
 def home():
     try:
-        data = inference.get_live_prediction()
+        data = _get_cached_prediction()
         if isinstance(data, dict) and "error" in data:
             # return friendly page and HTTP 503
             return render_template_string(HTML_TEMPLATE, error=data['error']), 503
