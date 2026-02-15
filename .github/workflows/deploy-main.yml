@@ -3,6 +3,9 @@ name: Deploy Main Branch to Port 80
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
+      - 'CRON_SETUP.md'
   workflow_dispatch:
 
 jobs:
