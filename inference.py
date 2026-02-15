@@ -14,8 +14,8 @@ RIPE_API_URL = f"https://atlas.ripe.net/api/v2/measurements/{MEASUREMENT_ID}/res
 MODEL_FILE = "tournament_model.json"
 
 # TIMEOUTS / RETRIES / CACHE
-RIPE_API_TIMEOUT = 60           # per-request timeout (seconds)
-RIPE_API_RETRIES = 3           # number of attempts
+RIPE_API_TIMEOUT = 80           # per-request timeout (seconds)
+RIPE_API_RETRIES = 4           # number of attempts
 RIPE_BACKOFF_FACTOR = 1.5      # exponential backoff multiplier
 RIPE_CACHE_TTL = 600           # seconds to keep in-memory RIPE results (5 minutes)
 PERSISTENT_PREDICT_PATH = "/tmp/last_prediction.json"  # fallback persisted prediction
