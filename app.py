@@ -109,7 +109,7 @@ HTML_TEMPLATE = """
 </head>
 <body>
     <div class="card">
-        <h1>AI Network degradation detection</h1>
+        <h1>AI Network Degradation Detection</h1>
         <p class="subtitle">Real-time Anomaly Detection</p>
         
         {% if error %}
