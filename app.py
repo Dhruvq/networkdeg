@@ -77,7 +77,7 @@ HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Network degredation detection</title>
+    <title>AI Network Degradation Detection</title>
     {% if prediction and prediction.is_stale %}
     <meta http-equiv="refresh" content="30">
     {% else %}
@@ -109,7 +109,7 @@ HTML_TEMPLATE = """
 </head>
 <body>
     <div class="card">
-        <h1>AI Network degredation detection</h1>
+        <h1>AI Network degradation detection</h1>
         <p class="subtitle">Real-time Anomaly Detection</p>
         
         {% if error %}
@@ -132,7 +132,7 @@ HTML_TEMPLATE = """
             {% endif %}
 
             <p style="font-size: 14px; color: #a2a8d3;">
-                AI Calculated Degredation Probability: <strong>{{ (prediction.probability * 100)|round(1) }}%</strong>
+                AI Calculated Degradation Probability: <strong>{{ (prediction.probability * 100)|round(1) }}%</strong>
             </p>
             
             <hr style="border-color: #0f3460;">
