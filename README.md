@@ -1,4 +1,11 @@
 # Network Degradation Prediction Using Real Internet Telemetry
+
+[![Python](https://img.shields.io/badge/Python-3.9-blue?logo=python)]()
+[![Live on AWS](https://img.shields.io/badge/Deployed-AWS%20EC2-orange?logo=amazonaws)](http://54.215.23.12/)
+[![CI/CD](https://img.shields.io/badge/CI/CD-GitHub%20Actions-blue?logo=githubactions)]()
+[![Dockerized](https://img.shields.io/badge/Containerized-Docker-blue?logo=docker)]()
+[![Model](https://img.shields.io/badge/Model-XGBoost-success)]()
+
 ## Overview
 This project is a production-deployed, end-to-end machine learning system that predicts short-term network performance degradation using real-world internet telemetry from RIPE Atlas. Rather than relying on hand-tuned thresholds, it uses a SMOTE-balanced XGBoost classifier trained on 327MB of historical ping data to output a probabilistic risk score - predicting whether the network will degrade **5 minutes into the future** based on current latency, jitter, and momentum signals.
 
