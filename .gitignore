@@ -13,22 +13,9 @@ build/
 *.egg-info/
 .eggs/
 
-# Data files (too large for git, keep local only)
-*.csv
+# Raw Data file (local only)
 network_telemetry.csv
-training_data.csv
 
-# Model files (extras not used in production)
-model.json
-netprophet_model.json
-# tournament_model.json is kept in git (production model)
-
-# Training scripts (not needed for production deployment)
-ingest_data.py
-process_data.py
-train_model.py
-train_model_smote.py
-tune_model.py
 
 # Testing
 .pytest_cache/
