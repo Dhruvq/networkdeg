@@ -5,6 +5,8 @@ This project is a production-deployed, end-to-end machine learning system that p
 The system is live on AWS EC2 (t3.micro) and continuously deployed via GitHub Actions. To stay stable on constrained hardware, a cron job refreshes predictions in the background every 10 minutes while the Flask dashboard serves cached results instantly - ensuring sub-100ms page loads regardless of RIPE API response times. If data grows stale, the UI degrades gracefully with warnings rather than crashing.  
 [Visit the site!](http://54.215.23.12/)
 
+#### High level pipeline:
+
 ```mermaid
 graph LR
     A[RIPE Atlas API] -->|Raw JSON Telemetry| B(Data Ingestion Service)
@@ -12,8 +14,9 @@ graph LR
     C -->|Jitter, Hops, RTT| D[XGBoost Inference Engine]
     D -->|Degradation Probability| E[Dashboard / Alert System]
 ```
+#### Preview:
 <p align="center"> 
-    <img width="65%" alt="Network Deg Screenshot" src="https://github.com/user-attachments/assets/34ff2fdc-09ff-4d76-baeb-f2f365fe2f34" />
+    <img width="474" height="477" alt="Screenshot 2026-02-18 at 8 59 07 PM" src="https://github.com/user-attachments/assets/8b19eec0-8c76-497c-8410-340dd356ff68" />
 </p>
 
 ## Key Features
