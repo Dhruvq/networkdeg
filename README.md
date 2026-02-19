@@ -12,6 +12,9 @@ graph LR
     C -->|Jitter, Hops, RTT| D[XGBoost Inference Engine]
     D -->|Degradation Probability| E[Dashboard / Alert System]
 ```
+<p align="center"> 
+    <img width="65%" alt="Network Deg Screenshot" src="https://github.com/user-attachments/assets/34ff2fdc-09ff-4d76-baeb-f2f365fe2f34" />
+</p>
 
 ## Key Features
 - **Predictive ML**: XGBoost classifier trained on 327MB of real ping data predicts network degradation **5 minutes before it happens**
