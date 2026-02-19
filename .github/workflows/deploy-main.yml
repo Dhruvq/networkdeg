@@ -7,7 +7,7 @@ on:
       - 'README.md'
       - 'CRON_SETUP.md'
       - 'HOW_THIS_WAS_BUILT.md'
-      - 'pyfiles/**'
+      - 'initial_files/**'
   workflow_dispatch:
 
 jobs:
