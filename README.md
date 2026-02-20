@@ -7,7 +7,7 @@
 [![Model](https://img.shields.io/badge/Model-XGBoost-success)]()
 
 ## Overview
-This project is a production-deployed, end-to-end machine learning system that predicts short-term network performance degradation using real-world internet telemetry from RIPE Atlas. Rather than relying on hand-tuned thresholds, it uses a SMOTE-balanced XGBoost classifier trained on 327MB of historical ping data to output a probabilistic risk score - predicting whether the network will degrade **5 minutes into the future** based on current latency, jitter, and momentum signals.
+This project is a production-deployed, end-to-end machine learning system that predicts short-term network performance degradation using real-world internet telemetry from RIPE Atlas*. Rather than relying on hand-tuned thresholds, it uses a SMOTE-balanced XGBoost classifier trained on 327MB of historical ping data to output a probabilistic risk score - predicting whether the network will degrade **5 minutes into the future** based on current latency, jitter, and momentum signals.
 
 The system is live on AWS EC2 (t3.micro) and continuously deployed via GitHub Actions. To stay stable on constrained hardware, a cron job refreshes predictions in the background every 10 minutes while the Flask dashboard serves cached results instantly - ensuring sub-100ms page loads regardless of RIPE API response times. If data grows stale, the UI degrades gracefully with warnings rather than crashing.  
 [Visit the site!](http://54.215.23.12/)
@@ -121,3 +121,10 @@ The final model was evaluated on a held-out test set of 190 samples containing 1
 | **Actually Degraded** | 6 (FN) | 4 (TP) |
 
 Each false alarm is a brief alert with no service impact; each missed event is an unwarned failure. Given the rarity of degradation events and the cost asymmetry, recall is the metric that matters.
+
+---
+
+**[RIPE Atlas Measurement #1001](https://atlas.ripe.net/measurements/1001/) is one of the many built-in measurements that run automatically and continuously across the RIPE Atlas network.*
+- *Type: ping over IPv4.*
+- *Target: k.root-servers.net (K-root DNS server).*
+- *Purpose: It is a long-running, public measurement designed to continuously monitor the reachability and latency to a critical piece of Internet infrastructure, providing a historical perspective on connectivity.*
