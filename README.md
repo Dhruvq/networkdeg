@@ -5,6 +5,7 @@
 [![CI/CD](https://img.shields.io/badge/CI/CD-GitHub%20Actions-blue?logo=githubactions)]()
 [![Dockerized](https://img.shields.io/badge/Containerized-Docker-blue?logo=docker)]()
 [![Model](https://img.shields.io/badge/Model-XGBoost-success)]()
+[![Static Badge](https://img.shields.io/badge/Current_AWS_Status-Live-brightgreen?style=for-the-badge&color=brightgreen)](http://54.215.23.12/)
 
 ## Overview
 This project is a production-deployed, end-to-end machine learning system that predicts short-term network performance degradation using real-world internet telemetry from RIPE Atlas*. Rather than relying on hand-tuned thresholds, it uses a SMOTE-balanced XGBoost classifier trained on 327MB of historical ping data to output a probabilistic risk score - predicting whether the network will degrade **5 minutes into the future** based on current latency, jitter, and momentum signals.
