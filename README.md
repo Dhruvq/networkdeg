@@ -10,7 +10,7 @@
 ## Overview
 This project is a production-deployed, end-to-end machine learning system that predicts short-term network performance degradation using real-world internet telemetry from RIPE Atlas*. Rather than relying on hand-tuned thresholds, it uses a SMOTE-balanced XGBoost classifier trained on 327MB of historical ping data to output a probabilistic risk score - predicting whether the network will degrade **5 minutes into the future** based on current latency, jitter, and momentum signals.
 
-The system is live on AWS EC2 (t3.micro) and continuously deployed via GitHub Actions. To stay stable on constrained hardware, a cron job refreshes predictions in the background every 10 minutes while the Flask dashboard serves cached results instantly - ensuring sub-100ms page loads regardless of RIPE API response times. If data grows stale, the UI degrades gracefully with warnings rather than crashing.  
+The system is live on AWS EC2 (t3.micro) and continuously deployed via GitHub Actions. To stay stable on constrained hardware, a cron job refreshes predictions in the background every 10 minutes while the Flask dashboard serves cached results instantly - ensuring sub-100ms page loads regardless of RIPE API response times. The dashboard displays live metrics alongside interactive **12-hour historical graphs** of latency, jitter, and degradation probability. If data grows stale, the UI degrades gracefully with warnings rather than crashing.
 [Visit the site!](http://54.215.23.12/)
 
 #### High level pipeline:
@@ -30,6 +30,7 @@ graph LR
 ## Key Features
 - **Predictive ML**: XGBoost classifier trained on 327MB of real ping data predicts network degradation **5 minutes before it happens**
 - **Real Internet Data**: Pulls live telemetry from RIPE Atlas Measurement #1001 (Root DNS anchor used by global ISPs)
+- **Historical Graphs**: Interactive 12-hour rolling graphs of latency, jitter, and degradation probability updated every 10 minutes
 - **Class Imbalance Solved**: SMOTE-based resampling addresses the <1% degradation event rate that causes naive models to fail
 - **Production-Stable Architecture**: Cron-based background refresh decouples heavy ML inference from user requests, keeping page loads under 100ms
 - **Graceful Degradation**: Stale cache served with warnings instead of crashing — UI auto-refreshes faster when data is old
@@ -87,6 +88,8 @@ To avoid memory spikes on constrained hardware, inference is fully decoupled fro
 │  RIPE API → Pandas → XGBoost                 │
 │      ↓                                       │
 │  Write /tmp/last_prediction.json             │
+│  Write to /var/lib/netprophet/cache/         │
+│        history.json (12h rolling)            │
 └─────────────────────────────────────────────┘
                      ║
                      ║ (File system)
@@ -97,8 +100,10 @@ To avoid memory spikes on constrained hardware, inference is fully decoupled fro
 │  app.py                                      │
 │      ↓                                       │
 │  Read /tmp/last_prediction.json (<1ms)       │
+│  GET /api/history → history.json             │
 │      ↓                                       │
-│  Render dashboard with cached data           │
+│  Render dashboard + Chart.js graphs          │
+│  (live metrics + 12h historical trends)      │
 └─────────────────────────────────────────────┘
 ```
 

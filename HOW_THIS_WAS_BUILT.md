@@ -200,16 +200,54 @@ The computational heart of the system, designed for robustness in production.
 - Never returns null - always returns valid prediction dict or error dict
 
 #### update_cache.py - Background Refresh Worker
-Simple cron wrapper that ensures fresh predictions:
+Simple cron wrapper that ensures fresh predictions and maintains rolling history:
 
 ```python
 result = inference.get_live_prediction()
 # Automatically persisted to /tmp/last_prediction.json
+append_to_history(result)  # Also append to 12-hour rolling history
 ```
 
 Configured during deployment (`.github/workflows/deploy-main.yml`, lines 92-98) to run every 10 minutes via cron.
 
 **Success Criteria:**
-- Exit code 0 if successful (cache updated)
+- Exit code 0 if successful (cache updated, history appended)
 - Exit code 1 if failed (cron will retry in 10 minutes)
 - All output logged to `/var/log/netprophet_cache.log` for monitoring
+
+**History Management:**
+Each run appends `{timestamp, latency, jitter, probability}` to `/var/lib/netprophet/cache/history.json`. Entries older than 12 hours are automatically pruned. This creates a rolling window of ~72 data points (one per 10-minute cron cycle) that powers the frontend graphs.
+
+### 8. Historical Graphs: Visualizing 12-Hour Trends
+
+To provide context beyond a single snapshot, the dashboard displays three interactive Chart.js graphs:
+
+**Data Flow:**
+1. Every 10 minutes, `update_cache.py` appends the latest prediction to `history.json`
+2. User loads dashboard → Flask renders HTML + JavaScript
+3. JavaScript calls `/api/history` endpoint (instant, <1KB read from disk)
+4. Chart.js renders three time-series graphs with shared X-axis (time)
+
+**Three Metrics Visualized:**
+
+1. **Latency Graph** (red): Shows network round-trip time trends over 12 hours
+   - Helps identify persistent elevation or spikes
+   - Y-axis: milliseconds
+
+2. **Jitter Graph** (pink): Network stability indicator (standard deviation of RTT)
+   - High jitter = inconsistent response times = poor quality
+   - Y-axis: milliseconds
+
+3. **Degradation Probability** (green): ML model's confidence score
+   - Threshold line at 40% determines alert status
+   - Y-axis: 0-100%
+
+**Technical Implementation:**
+- All charts share identical X-axis labels (HH:mm PST timestamps)
+- Responsive design: 2-column grid on desktop, single-column on mobile (<768px)
+- Dark theme colors matched to existing dashboard (`#16213e` background, accent colors)
+- Legend shows which color represents which metric
+- Lightweight: uses CDN-hosted Chart.js library, zero build step
+
+**Architecture Benefit:**
+The separation of history storage (append-only file) from web serving (cache-first read) means graphs load in <100ms even though they contain 72 data points. No database required.
