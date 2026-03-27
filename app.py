@@ -126,6 +126,10 @@ HTML_TEMPLATE = """
     <div class="container">
         <h1>AI Network Degradation Detection</h1>
         <p class="subtitle">Real-time Anomaly Detection — Last 12 Hours</p>
+        <p style="text-align: center; color: #a2a8d3; max-width: 800px; margin: 0 auto 30px; font-size: 14px; line-height: 1.6;">
+            An XGBoost-powered system that predicts network degradation 5 minutes before it happens using real-world internet telemetry from RIPE Atlas.
+            Monitor live latency, jitter, and degradation probability with 12-hour historical trends to catch issues before they impact your experience.
+        </p>
 
         {% if error %}
             <div class="card" style="text-align: center;">
