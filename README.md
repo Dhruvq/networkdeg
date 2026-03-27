@@ -24,7 +24,7 @@ graph LR
 ```
 #### Preview:
 <p align="center"> 
-    <img width="474" height="477" alt="Screenshot 2026-02-18 at 8 59 07 PM" src="https://github.com/user-attachments/assets/8b19eec0-8c76-497c-8410-340dd356ff68" />
+    <img width="800" alt="Screenshot 2026-03-26 at 9 33 02 PM" src="https://github.com/user-attachments/assets/04f7627a-2ae0-46d3-9d52-66a1f55a0d65" />
 </p>
 
 ## Key Features
