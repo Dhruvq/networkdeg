@@ -11,7 +11,7 @@
 This project is a production-deployed, end-to-end machine learning system that predicts short-term network performance degradation using real-world internet telemetry from RIPE Atlas*. Rather than relying on hand-tuned thresholds, it uses a SMOTE-balanced XGBoost classifier trained on 327MB of historical ping data to output a probabilistic risk score - predicting whether the network will degrade **5 minutes into the future** based on current latency, jitter, and momentum signals.
 
 The system is live on AWS EC2 (t3.micro) and continuously deployed via GitHub Actions. To stay stable on constrained hardware, a cron job refreshes predictions in the background every 10 minutes while the Flask dashboard serves cached results instantly - ensuring sub-100ms page loads regardless of RIPE API response times. The dashboard displays live metrics alongside interactive **12-hour historical graphs** of latency, jitter, and degradation probability. If data grows stale, the UI degrades gracefully with warnings rather than crashing.
-[Visit the site!](http://54.215.23.12/)
+[Visit the site!](https://networkdeg.dhruvq.com/)
 
 #### High level pipeline:
 
