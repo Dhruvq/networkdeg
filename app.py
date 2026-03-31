@@ -205,13 +205,13 @@ HTML_TEMPLATE = """
             margin-right: 8px;
         }
         .aws-badge {
-            background: rgba(191, 0, 255, 0.1);
-            border-color: rgba(191, 0, 255, 0.4);
-            color: #BF00FF;
+            background: rgba(44, 255, 5, 0.08);
+            border-color: rgba(44, 255, 5, 0.35);
+            color: #2CFF05;
         }
         .aws-badge:hover {
-            background: rgba(191, 0, 255, 0.25);
-            border-color: #BF00FF;
+            background: rgba(44, 255, 5, 0.15);
+            border-color: rgba(44, 255, 5, 0.6);
         }
     </style>
 </head>
