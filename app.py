@@ -91,30 +91,30 @@ HTML_TEMPLATE = """
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             padding: 20px;
-            background-color: #1a1a2e;
-            color: #fff;
+            background-color: #000000;
+            color: #FFFFFF;
             margin: 0;
         }
         .container { max-width: 1400px; margin: 0 auto; }
-        h1 { color: #e94560; text-align: center; margin-bottom: 10px; }
-        .subtitle { color: #a2a8d3; text-align: center; margin: 0 0 30px 0; }
+        h1 { color: #2CFF05; text-align: center; margin-bottom: 10px; }
+        .subtitle { color: #A0A0A0; text-align: center; margin: 0 0 30px 0; }
 
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         @media (max-width: 768px) { .row { grid-template-columns: 1fr; } }
 
-        .card { background: #16213e; padding: 20px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .card { background: #2D2D2D; padding: 20px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); }
         .status-box { padding: 20px; border-radius: 10px; margin: 20px 0; font-weight: bold; font-size: 24px; }
-        .safe { background-color: #0f3460; color: #4cd137; border: 2px solid #4cd137; }
-        .danger { background-color: #5c1a1a; color: #e84118; border: 2px solid #e84118; animation: pulse 2s infinite; }
+        .safe { background-color: rgba(44, 255, 5, 0.1); color: #2CFF05; border: 2px solid #2CFF05; }
+        .danger { background-color: rgba(191, 0, 255, 0.1); color: #BF00FF; border: 2px solid #BF00FF; animation: pulse 2s infinite; }
 
-        .metric-row { display: flex; justify-content: space-between; margin-top: 15px; color: #cbd5e0; }
+        .metric-row { display: flex; justify-content: space-between; margin-top: 15px; color: #E0E0E0; }
         .metric-value { font-weight: bold; font-size: 18px; }
 
         .stale-warning { background: #ff9800; color: #000; padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 12px; font-weight: bold; }
         .stale-critical { background: #e74c3c; color: #fff; padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 12px; font-weight: bold; }
 
         .chart-container { position: relative; height: 300px; }
-        .chart-title { font-weight: bold; margin-bottom: 10px; color: #e94560; }
+        .chart-title { font-weight: bold; margin-bottom: 10px; color: #2CFF05; }
 
         .skeleton-loader {
             position: absolute;
@@ -133,25 +133,25 @@ HTML_TEMPLATE = """
             text-align: center;
             margin-top: 50px;
             padding-top: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: #a2a8d3;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #A0A0A0;
             font-size: 14px;
         }
         .site-footer a {
-            color: #e94560;
+            color: #BF00FF;
             text-decoration: none;
             margin: 0 5px;
             transition: color 0.2s ease;
             font-weight: 600;
         }
         .site-footer a:hover {
-            color: #ff6b9d;
+            color: #2CFF05;
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(232, 65, 24, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(232, 65, 24, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(232, 65, 24, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(191, 0, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(191, 0, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(191, 0, 255, 0); }
         }
         .header-container {
             position: relative;
@@ -187,8 +187,8 @@ HTML_TEMPLATE = """
             display: inline-flex;
             align-items: center;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #a2a8d3;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #A0A0A0;
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
@@ -205,13 +205,13 @@ HTML_TEMPLATE = """
             margin-right: 8px;
         }
         .aws-badge {
-            background: rgba(255, 153, 0, 0.1);
-            border-color: rgba(255, 153, 0, 0.3);
-            color: #ff9900;
+            background: rgba(191, 0, 255, 0.1);
+            border-color: rgba(191, 0, 255, 0.4);
+            color: #BF00FF;
         }
         .aws-badge:hover {
-            background: rgba(255, 153, 0, 0.2);
-            border-color: #ff9900;
+            background: rgba(191, 0, 255, 0.25);
+            border-color: #BF00FF;
         }
     </style>
 </head>
@@ -230,14 +230,14 @@ HTML_TEMPLATE = """
             <h1 style="margin-bottom: 0;">AI Network Degradation Detection</h1>
         </div>
         <p class="subtitle">Real-time Anomaly Detection — Last 12 Hours</p>
-        <p style="text-align: center; color: #a2a8d3; max-width: 800px; margin: 0 auto 30px; font-size: 14px; line-height: 1.6;">
+        <p style="text-align: center; color: #A0A0A0; max-width: 800px; margin: 0 auto 30px; font-size: 14px; line-height: 1.6;">
             An XGBoost-powered system that predicts network degradation 5 minutes before it happens using real-world internet telemetry from RIPE Atlas.
             Monitor live latency, jitter, and degradation probability with 12-hour historical trends to catch issues before they impact your experience.
         </p>
 
         {% if error %}
             <div class="card" style="text-align: center;">
-                <p style="color:#e84118">System Error: {{ error }}</p>
+                <p style="color:#BF00FF">System Error: {{ error }}</p>
             </div>
         {% else %}
             <!-- Row 1: Status Card + Probability Chart -->
@@ -259,11 +259,11 @@ HTML_TEMPLATE = """
                         {% endif %}
                     {% endif %}
 
-                    <p style="font-size: 14px; color: #a2a8d3; margin: 15px 0;">
+                    <p style="font-size: 14px; color: #A0A0A0; margin: 15px 0;">
                         AI Calculated Degradation Probability: <strong>{{ (prediction.probability * 100)|round(1) }}%</strong>
                     </p>
 
-                    <hr style="border-color: #0f3460;">
+                    <hr style="border-color: rgba(255, 255, 255, 0.1);">
 
                     <div class="metric-row">
                         <span>Latency</span>
@@ -274,7 +274,7 @@ HTML_TEMPLATE = """
                         <span class="metric-value">{{ prediction.jitter|round(1) }} ms</span>
                     </div>
 
-                    <p style="margin-top: 15px; font-size: 12px; color: #535c68;">Last Updated: {{ prediction.timestamp|to_pst }}</p>
+                    <p style="margin-top: 15px; font-size: 12px; color: #757575;">Last Updated: {{ prediction.timestamp|to_pst }}</p>
                 </div>
 
                 <div class="card">
@@ -315,10 +315,10 @@ HTML_TEMPLATE = """
 
     <script>
         const chartColors = {
-            latency: '#e94560',
-            jitter: '#ff6b9d',
-            probability: '#4cd137',
-            grid: '#0f3460'
+            latency: '#2CFF05',
+            jitter: '#FFFFFF',
+            probability: '#BF00FF',
+            grid: 'rgba(255, 255, 255, 0.05)'
         };
 
         async function initCharts() {
@@ -361,11 +361,11 @@ HTML_TEMPLATE = """
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { color: '#a2a8d3', font: { size: 11 } },
+                            ticks: { color: '#A0A0A0', font: { size: 11 } },
                             grid: { color: chartColors.grid }
                         },
                         x: {
-                            ticks: { color: '#a2a8d3', font: { size: 10 }, maxRotation: 45, minRotation: 0 },
+                            ticks: { color: '#A0A0A0', font: { size: 10 }, maxRotation: 45, minRotation: 0 },
                             grid: { color: chartColors.grid }
                         }
                     }
@@ -380,7 +380,7 @@ HTML_TEMPLATE = """
                             label: 'Latency (ms)',
                             data: latencyData,
                             borderColor: chartColors.latency,
-                            backgroundColor: 'rgba(233, 69, 96, 0.1)',
+                            backgroundColor: 'rgba(44, 255, 5, 0.1)',
                             borderWidth: 2,
                             fill: true,
                             tension: 0.4,
@@ -406,7 +406,7 @@ HTML_TEMPLATE = """
                             label: 'Jitter (ms)',
                             data: jitterData,
                             borderColor: chartColors.jitter,
-                            backgroundColor: 'rgba(255, 107, 157, 0.1)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
                             borderWidth: 2,
                             fill: true,
                             tension: 0.4,
@@ -426,7 +426,7 @@ HTML_TEMPLATE = """
                             label: 'Degradation Risk (%)',
                             data: probabilityData,
                             borderColor: chartColors.probability,
-                            backgroundColor: 'rgba(76, 209, 55, 0.1)',
+                            backgroundColor: 'rgba(191, 0, 255, 0.1)',
                             borderWidth: 2,
                             fill: true,
                             tension: 0.4,
