@@ -153,11 +153,35 @@ HTML_TEMPLATE = """
             70% { box-shadow: 0 0 0 10px rgba(232, 65, 24, 0); }
             100% { box-shadow: 0 0 0 0 rgba(232, 65, 24, 0); }
         }
+        .header-container {
+            position: relative;
+            text-align: center;
+            margin-bottom: 10px;
+            padding-top: 5px;
+        }
         .badge-container {
+            position: absolute;
+            left: 0;
+            top: 25%;
+            transform: translateY(-50%);
             display: flex;
-            justify-content: center;
             gap: 15px;
-            margin-bottom: 15px;
+        }
+        @media (max-width: 900px) {
+            .header-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                padding-top: 0;
+            }
+            .badge-container {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                margin-bottom: 0;
+            }
         }
         .tech-badge {
             display: inline-flex;
@@ -193,17 +217,18 @@ HTML_TEMPLATE = """
 </head>
 <body>
     <div class="container">
-        <div class="badge-container">
-            <div class="tech-badge aws-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17.5 19c2.485 0 4.5-2 4.5-4.5q0-.354-.06-.694A5 5 0 0 0 17 5.093 7 7 0 0 0 4.3 9.4 4.5 4.5 0 0 0 3.5 18"></path>
-                    <path d="M3.5 19h14"></path>
-                </svg>
-                HOSTED ON AWS EC2
+        <div class="header-container">
+            <div class="badge-container">
+                <div class="tech-badge aws-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17.5 19c2.485 0 4.5-2 4.5-4.5q0-.354-.06-.694A5 5 0 0 0 17 5.093 7 7 0 0 0 4.3 9.4 4.5 4.5 0 0 0 3.5 18"></path>
+                        <path d="M3.5 19h14"></path>
+                    </svg>
+                    HOSTED ON AWS EC2
+                </div>
             </div>
+            <h1 style="margin-bottom: 0;">AI Network Degradation Detection</h1>
         </div>
-
-        <h1>AI Network Degradation Detection</h1>
         <p class="subtitle">Real-time Anomaly Detection — Last 12 Hours</p>
         <p style="text-align: center; color: #a2a8d3; max-width: 800px; margin: 0 auto 30px; font-size: 14px; line-height: 1.6;">
             An XGBoost-powered system that predicts network degradation 5 minutes before it happens using real-world internet telemetry from RIPE Atlas.
