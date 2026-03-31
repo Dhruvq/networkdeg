@@ -78,7 +78,7 @@ HTML_TEMPLATE = """
 <html>
 <head>
     <title>AI Network Degradation Detection</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e94560' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23BF00FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/></svg>">
     {% if prediction and prediction.is_stale %}
     <meta http-equiv="refresh" content="30">
     {% else %}
@@ -96,25 +96,25 @@ HTML_TEMPLATE = """
             margin: 0;
         }
         .container { max-width: 1400px; margin: 0 auto; }
-        h1 { color: #2CFF05; text-align: center; margin-bottom: 10px; }
-        .subtitle { color: #A0A0A0; text-align: center; margin: 0 0 30px 0; }
+        h1 { color: #ffffff; text-align: center; margin-bottom: 10px; }
+        .subtitle { color: #a1a1aa; text-align: center; margin: 0 0 30px 0; }
 
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         @media (max-width: 768px) { .row { grid-template-columns: 1fr; } }
 
-        .card { background: #2D2D2D; padding: 20px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 8px 16px rgba(0,0,0,0.5); }
         .status-box { padding: 20px; border-radius: 10px; margin: 20px 0; font-weight: bold; font-size: 24px; }
-        .safe { background-color: rgba(44, 255, 5, 0.1); color: #2CFF05; border: 2px solid #2CFF05; }
-        .danger { background-color: rgba(191, 0, 255, 0.1); color: #BF00FF; border: 2px solid #BF00FF; animation: pulse 2s infinite; }
+        .safe { background-color: rgba(44, 255, 5, 0.08); color: #2CFF05; border: 1px solid rgba(44,255,5,0.35); }
+        .danger { background-color: rgba(191, 0, 255, 0.08); color: #BF00FF; border: 1px solid rgba(191,0,255,0.35); animation: pulse 2s infinite; }
 
-        .metric-row { display: flex; justify-content: space-between; margin-top: 15px; color: #E0E0E0; }
-        .metric-value { font-weight: bold; font-size: 18px; }
+        .metric-row { display: flex; justify-content: space-between; margin-top: 15px; color: #a1a1aa; }
+        .metric-value { font-weight: bold; font-size: 18px; color: #ffffff; }
 
-        .stale-warning { background: #ff9800; color: #000; padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 12px; font-weight: bold; }
-        .stale-critical { background: #e74c3c; color: #fff; padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 12px; font-weight: bold; }
+        .stale-warning { background: rgba(191,0,255,0.1); color: #a1a1aa; border: 1px solid rgba(191,0,255,0.3); padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 12px; font-weight: bold; }
+        .stale-critical { background: rgba(191,0,255,0.18); color: #BF00FF; border: 1px solid rgba(191,0,255,0.5); padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 12px; font-weight: bold; }
 
         .chart-container { position: relative; height: 300px; }
-        .chart-title { font-weight: bold; margin-bottom: 10px; color: #2CFF05; }
+        .chart-title { font-weight: bold; margin-bottom: 10px; color: #ffffff; }
 
         .skeleton-loader {
             position: absolute;
@@ -134,18 +134,18 @@ HTML_TEMPLATE = """
             margin-top: 50px;
             padding-top: 25px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #A0A0A0;
+            color: #a1a1aa;
             font-size: 14px;
         }
         .site-footer a {
-            color: #BF00FF;
+            color: #a1a1aa;
             text-decoration: none;
             margin: 0 5px;
             transition: color 0.2s ease;
             font-weight: 600;
         }
         .site-footer a:hover {
-            color: #2CFF05;
+            color: #BF00FF;
         }
 
         @keyframes pulse {
@@ -188,7 +188,7 @@ HTML_TEMPLATE = """
             align-items: center;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #A0A0A0;
+            color: #a1a1aa;
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
@@ -230,7 +230,7 @@ HTML_TEMPLATE = """
             <h1 style="margin-bottom: 0;">AI Network Degradation Detection</h1>
         </div>
         <p class="subtitle">Real-time Anomaly Detection — Last 12 Hours</p>
-        <p style="text-align: center; color: #A0A0A0; max-width: 800px; margin: 0 auto 30px; font-size: 14px; line-height: 1.6;">
+        <p style="text-align: center; color: #a1a1aa; max-width: 800px; margin: 0 auto 30px; font-size: 14px; line-height: 1.6;">
             An XGBoost-powered system that predicts network degradation 5 minutes before it happens using real-world internet telemetry from RIPE Atlas.
             Monitor live latency, jitter, and degradation probability with 12-hour historical trends to catch issues before they impact your experience.
         </p>
@@ -274,7 +274,7 @@ HTML_TEMPLATE = """
                         <span class="metric-value">{{ prediction.jitter|round(1) }} ms</span>
                     </div>
 
-                    <p style="margin-top: 15px; font-size: 12px; color: #757575;">Last Updated: {{ prediction.timestamp|to_pst }}</p>
+                    <p style="margin-top: 15px; font-size: 12px; color: #a1a1aa;">Last Updated: {{ prediction.timestamp|to_pst }}</p>
                 </div>
 
                 <div class="card">
@@ -361,11 +361,11 @@ HTML_TEMPLATE = """
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { color: '#A0A0A0', font: { size: 11 } },
+                            ticks: { color: '#a1a1aa', font: { size: 11 } },
                             grid: { color: chartColors.grid }
                         },
                         x: {
-                            ticks: { color: '#A0A0A0', font: { size: 10 }, maxRotation: 45, minRotation: 0 },
+                            ticks: { color: '#a1a1aa', font: { size: 10 }, maxRotation: 45, minRotation: 0 },
                             grid: { color: chartColors.grid }
                         }
                     }
@@ -453,8 +453,8 @@ HTML_TEMPLATE = """
                     const el = document.getElementById(id);
                     if (el) {
                         el.style.animation = 'none';
-                        el.style.backgroundColor = 'rgba(232, 65, 24, 0.1)';
-                        el.innerHTML = '<div style="color: #e84118; padding: 20px; text-align: center;">Error loading chart data.</div>';
+                        el.style.backgroundColor = 'rgba(191, 0, 255, 0.08)';
+                        el.innerHTML = '<div style="color: #a1a1aa; padding: 20px; text-align: center;">Error loading chart data.</div>';
                     }
                 });
             }
