@@ -1,14 +1,14 @@
 version: '3.8'
 
 services:
-  # Production - Main Branch (Port 80)
+  # Production - Main Branch (Port 5000 on localhost)
   netprophet-main:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: netprophet-main
     ports:
-      - "80:5000"
+      - "127.0.0.1:5000:5000"
     restart: unless-stopped
     environment:
       - ENVIRONMENT=production

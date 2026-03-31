@@ -68,11 +68,26 @@ jobs:
             # Build new image
             sudo docker build -t netprophet-main .
 
-            # Run container on port 80 with persistent cache volume
+            # Install Caddy if not present
+            if ! command -v caddy &>/dev/null; then
+              echo "Installing Caddy..."
+              sudo apt-get install -y debian-keyring debian-archive-keyring apt-transport-https curl
+              curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+              curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+              sudo apt-get update && sudo apt-get install -y caddy
+            fi
+
+            # Write Caddyfile for HTTPS reverse proxy
+            sudo sh -c 'printf "%s\n%s\n%s\n" "networkdeg.dhruvq.com {" "    reverse_proxy 127.0.0.1:5000" "}" > /etc/caddy/Caddyfile'
+
+            sudo systemctl enable caddy
+            sudo systemctl restart caddy
+
+            # Run container on localhost:5000 with persistent cache volume
             sudo docker run -d \
               --name netprophet-main \
               --restart unless-stopped \
-              -p 80:5000 \
+              -p 127.0.0.1:5000:5000 \
               -v /var/lib/netprophet/cache:/tmp \
               netprophet-main
 
@@ -85,7 +100,7 @@ jobs:
             sudo docker exec netprophet-main python3 /app/update_cache.py || echo "Initial cache update failed, will retry via cron"
 
             # Verify deployment (now cache should exist)
-            if curl -f http://localhost/ --max-time 10; then
+            if curl -f http://localhost:5000/ --max-time 10; then
               echo "Deployment successful - Flask is responding"
             else
               echo "Deployment failed - Flask not responding"
