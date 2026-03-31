@@ -78,6 +78,7 @@ HTML_TEMPLATE = """
 <html>
 <head>
     <title>AI Network Degradation Detection</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e94560' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/></svg>">
     {% if prediction and prediction.is_stale %}
     <meta http-equiv="refresh" content="30">
     {% else %}
@@ -115,15 +116,93 @@ HTML_TEMPLATE = """
         .chart-container { position: relative; height: 300px; }
         .chart-title { font-weight: bold; margin-bottom: 10px; color: #e94560; }
 
+        .skeleton-loader {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 8px;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .site-footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #a2a8d3;
+            font-size: 14px;
+        }
+        .site-footer a {
+            color: #e94560;
+            text-decoration: none;
+            margin: 0 5px;
+            transition: color 0.2s ease;
+            font-weight: 600;
+        }
+        .site-footer a:hover {
+            color: #ff6b9d;
+        }
+
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(232, 65, 24, 0.4); }
             70% { box-shadow: 0 0 0 10px rgba(232, 65, 24, 0); }
             100% { box-shadow: 0 0 0 0 rgba(232, 65, 24, 0); }
         }
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a2a8d3;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .tech-badge:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .tech-badge svg {
+            margin-right: 8px;
+        }
+        .aws-badge {
+            background: rgba(255, 153, 0, 0.1);
+            border-color: rgba(255, 153, 0, 0.3);
+            color: #ff9900;
+        }
+        .aws-badge:hover {
+            background: rgba(255, 153, 0, 0.2);
+            border-color: #ff9900;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="badge-container">
+            <div class="tech-badge aws-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.5 19c2.485 0 4.5-2 4.5-4.5q0-.354-.06-.694A5 5 0 0 0 17 5.093 7 7 0 0 0 4.3 9.4 4.5 4.5 0 0 0 3.5 18"></path>
+                    <path d="M3.5 19h14"></path>
+                </svg>
+                HOSTED ON AWS EC2
+            </div>
+        </div>
+
         <h1>AI Network Degradation Detection</h1>
         <p class="subtitle">Real-time Anomaly Detection — Last 12 Hours</p>
         <p style="text-align: center; color: #a2a8d3; max-width: 800px; margin: 0 auto 30px; font-size: 14px; line-height: 1.6;">
@@ -176,6 +255,7 @@ HTML_TEMPLATE = """
                 <div class="card">
                     <div class="chart-title">Degradation Probability</div>
                     <div class="chart-container">
+                        <div class="skeleton-loader" id="sk-prob"></div>
                         <canvas id="probabilityChart"></canvas>
                     </div>
                 </div>
@@ -186,6 +266,7 @@ HTML_TEMPLATE = """
                 <div class="card">
                     <div class="chart-title">Latency — Last 12 Hours</div>
                     <div class="chart-container">
+                        <div class="skeleton-loader" id="sk-lat"></div>
                         <canvas id="latencyChart"></canvas>
                     </div>
                 </div>
@@ -193,11 +274,18 @@ HTML_TEMPLATE = """
                 <div class="card">
                     <div class="chart-title">Jitter — Last 12 Hours</div>
                     <div class="chart-container">
+                        <div class="skeleton-loader" id="sk-jit"></div>
                         <canvas id="jitterChart"></canvas>
                     </div>
                 </div>
             </div>
         {% endif %}
+
+        <footer class="site-footer">
+            Built by Dhruv | 
+            <a href="https://www.linkedin.com/in/dhruv-thippasandra/" target="_blank">LinkedIn</a> | 
+            <a href="https://github.com/Dhruvq" target="_blank">GitHub</a>
+        </footer>
     </div>
 
     <script>
@@ -232,6 +320,11 @@ HTML_TEMPLATE = """
                 const latencyData = history.map(entry => entry.latency);
                 const jitterData = history.map(entry => entry.jitter);
                 const probabilityData = history.map(entry => entry.probability * 100);
+
+                ['sk-prob', 'sk-lat', 'sk-jit'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.display = 'none';
+                });
 
                 const chartOptions = {
                     responsive: true,
@@ -330,6 +423,15 @@ HTML_TEMPLATE = """
                 });
             } catch (error) {
                 console.error('Failed to load history:', error);
+                
+                ['sk-prob', 'sk-lat', 'sk-jit'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.style.animation = 'none';
+                        el.style.backgroundColor = 'rgba(232, 65, 24, 0.1)';
+                        el.innerHTML = '<div style="color: #e84118; padding: 20px; text-align: center;">Error loading chart data.</div>';
+                    }
+                });
             }
         }
 
