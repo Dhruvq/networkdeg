@@ -167,6 +167,14 @@ HTML_TEMPLATE = """
             display: flex;
             gap: 15px;
         }
+        .right-badge-container {
+            position: absolute;
+            right: 0;
+            top: 25%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 15px;
+        }
         @media (max-width: 900px) {
             .header-container {
                 display: flex;
@@ -175,10 +183,11 @@ HTML_TEMPLATE = """
                 gap: 15px;
                 padding-top: 0;
             }
-            .badge-container {
+            .badge-container, .right-badge-container {
                 position: relative;
                 top: auto;
                 left: auto;
+                right: auto;
                 transform: none;
                 margin-bottom: 0;
             }
@@ -213,6 +222,16 @@ HTML_TEMPLATE = """
             background: rgba(44, 255, 5, 0.15);
             border-color: rgba(44, 255, 5, 0.6);
         }
+        .github-badge {
+            background: rgba(191, 0, 255, 0.08);
+            border-color: rgba(191, 0, 255, 0.35);
+            color: #BF00FF;
+            text-decoration: none;
+        }
+        .github-badge:hover {
+            background: rgba(191, 0, 255, 0.15);
+            border-color: rgba(191, 0, 255, 0.6);
+        }
     </style>
 </head>
 <body>
@@ -228,6 +247,14 @@ HTML_TEMPLATE = """
                 </div>
             </div>
             <h1 style="margin-bottom: 0;">AI Network Degradation Detection</h1>
+            <div class="right-badge-container">
+                <a href="https://github.com/Dhruvq/networkdeg" target="_blank" class="tech-badge github-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                    VIEW ON GITHUB
+                </a>
+            </div>
         </div>
         <p class="subtitle">Real-time Anomaly Detection — Last 12 Hours</p>
         <p style="text-align: center; color: #a1a1aa; max-width: 800px; margin: 0 auto 30px; font-size: 14px; line-height: 1.6;">
